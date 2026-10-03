@@ -1,0 +1,6 @@
+# Extra dependencies of the legacy CSI-only tools in this folder.
+# Tested on Windows 11 / Python 3.13 with the versions given as lower bounds.
+numpy>=2.4.1
+pyserial>=3.5
+PyQt5>=5.15.11
+pyqtgraph>=0.14.0

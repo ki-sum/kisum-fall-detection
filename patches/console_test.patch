@@ -1,0 +1,82 @@
+diff --git a/examples/esp-radar/console_test/main/app_main.c b/examples/esp-radar/console_test/main/app_main.c
+index e97733e..788cd94 100644
+--- a/examples/esp-radar/console_test/main/app_main.c
++++ b/examples/esp-radar/console_test/main/app_main.c
+@@ -106,8 +106,8 @@ static struct console_input_config {
+     .predict_outliers_number   = 2,
+     .train_start               = false,
+     .collect_taget             = "unknown",
+-    .csi_output_type           = "LLTF",
+-    .csi_output_format         = "decimal"
++    .csi_output_type           = "HT-LTF",
++    .csi_output_format         = "base64"
+ };
+ 
+ static TimerHandle_t g_collect_timer_handele = NULL;
+@@ -216,7 +216,7 @@ static int wifi_cmd_radar(int argc, char **argv)
+         } else {
+             radar_config.csi_config.csi_filtered_cb = wifi_csi_raw_cb;
+             strcpy(g_console_input_config.csi_output_type, radar_args.csi_output_type->sval[0]);
+-#if CONFIG_IDF_TARGET_ESP32C5 || CONFIG_IDF_TARGET_ESP32C61
++#if CONFIG_IDF_TARGET_ESP32C5 || CONFIG_IDF_TARGET_ESP32C6 || CONFIG_IDF_TARGET_ESP32C61
+             if (!strcasecmp(radar_args.csi_output_type->sval[0], "LLTF")) {
+                 radar_config.csi_config.acquire_csi_lltf = true;
+                 radar_config.dec_config.ltf_type = RADAR_LTF_TYPE_LLTF;
+@@ -708,15 +708,33 @@ void app_main(void)
+     esp_radar_dec_config_t dec_config = ESP_RADAR_DEC_CONFIG_DEFAULT();
+     memcpy(csi_config.filter_mac, "\x1a\x00\x00\x00\x00\x00", 6);
+     csi_config.csi_recv_interval = g_send_data_interval;
++    csi_config.csi_filtered_cb   = wifi_csi_raw_cb;
+     dec_config.wifi_radar_cb     = wifi_radar_cb;
++    // ESPNOW packets from csi_send arrive as HT (802.11n), not HE. Match dec_config accordingly.
++    dec_config.ltf_type          = RADAR_LTF_TYPE_HTLTF;
++    dec_config.sub_carrier_step_size = 5;
+ #if WIFI_CSI_SEND_NULL_DATA_ENABLE
+     csi_config.dump_ack_en       = true;
+ #endif
+     dec_config.outliers_threshold = 0;
+     ESP_ERROR_CHECK(esp_radar_wifi_init(&wifi_config));
++    ESP_ERROR_CHECK(esp_radar_espnow_init(&espnow_config));
+     ESP_ERROR_CHECK(esp_radar_csi_init(&csi_config));
+     ESP_ERROR_CHECK(esp_radar_dec_init(&dec_config));
+ 
++    // Use esp_radar_init's default-peer creation logic. esp_radar_init sets s_ctx.default_peer,
++    // which is required for wifi_radar_cb to fire (see esp_radar.c line 1462).
++    // We already ran the individual inits above; wrap the peer creation call directly.
++    {
++        esp_radar_config_t _full = {
++            .wifi_config = wifi_config,
++            .csi_config = csi_config,
++            .espnow_config = espnow_config,
++            .dec_config = dec_config,
++        };
++        esp_radar_change_config(&_full);
++    }
++
+     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_event_handler, NULL));
+     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &wifi_event_handler, NULL));
+ 
+diff --git a/examples/esp-radar/console_test/tools/esp_csi_tool.py b/examples/esp-radar/console_test/tools/esp_csi_tool.py
+index 9afa171..98f2289 100755
+--- a/examples/esp-radar/console_test/tools/esp_csi_tool.py
++++ b/examples/esp-radar/console_test/tools/esp_csi_tool.py
+@@ -1303,12 +1303,16 @@ if __name__ == '__main__':
+     parser.add_argument('-p', '--port', dest='port', action='store', required=True,
+                         help='Serial port number of csv_recv device')
+     parser.add_argument('-t', '--csi_output_type', dest='csi_output_type', action='store',
+-                        choices=['LLTF', 'HT_LTF', 'HE_LTF', 'STBC-HT-LTF', 'STBC-HE-LTF'], default='LLTF',
+-                        help='CSI output type: LLTF, HT_LTF, HE_LTF, STBC-HT-LTF, or STBC-HE-LTF (default: LLTF)')
++                        choices=['LLTF', 'HT-LTF', 'HE-LTF', 'STBC-HT-LTF', 'STBC-HE-LTF',
++                                 'HT_LTF', 'HE_LTF'], default='LLTF',
++                        help='CSI output type (firmware expects hyphen form: HT-LTF, HE-LTF)')
++
++    # Normalize underscore variants to firmware's hyphen form
++    _norm_map = {'HT_LTF': 'HT-LTF', 'HE_LTF': 'HE-LTF'}
+ 
+     args = parser.parse_args()
+     serial_port = args.port
+-    csi_output_type = args.csi_output_type
++    csi_output_type = _norm_map.get(args.csi_output_type, args.csi_output_type)
+ 
+     serial_queue_read = Queue(maxsize=64)
+     serial_queue_write = Queue(maxsize=64)

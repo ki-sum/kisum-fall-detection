@@ -1,0 +1,9 @@
+# Dependencies of unified_monitor.py and pose_stickfigure.py.
+# Tested on Windows 11 / Python 3.13 with the versions given as lower bounds.
+numpy>=2.4.1
+pyserial>=3.5
+opencv-python>=4.13.0.90
+mediapipe>=1.0.0
+mss>=10.2.0
+Pillow>=11.0.0
+aioesphomeapi>=45.7.0

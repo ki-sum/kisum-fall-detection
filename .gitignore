@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Runtime output (may contain personal / health data — never commit)
+unified_logs/
+radar_logs/
+recordings/
+demo_recordings/
+*.mp4
+
+# Auto-downloaded MediaPipe models
+mediapipe_models/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Local working notes (not published)
+.private/
