@@ -15,6 +15,12 @@ sitting still. That is why a dedicated mmWave fall sensor was added and CSI was
 kept as a motion / presence layer. Details are in
 [`docs/EXPERIMENT_NOTES.md`](docs/EXPERIMENT_NOTES.md).
 
+The background story — how the idea came about, what the prototype (called
+*SilentGuardian* there) showed, and where WiFi sensing is oversold — is in the
+original write-up on LinkedIn:
+[From WiFi DensePose to a working demo — what the AI engine picked up, and what the field oversells](https://www.linkedin.com/pulse/from-wifi-densepose-working-demo-what-ai-engine-picked-juan-wang-yivue/)
+(July 2026).
+
 > [!WARNING]
 > **This is an experimental research prototype, not a medical device.**
 > It has not been clinically validated or certified, and it must not be relied
