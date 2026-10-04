@@ -23,11 +23,11 @@ original write-up on LinkedIn:
 
 ## Demo video
 
-[![Dashboard during a simulated fall: the bedroom mmWave sensor reports FALL DETECTED and the Family App panel shows the alert](docs/images/demo_thumbnail.jpg)](docs/media/demo.mp4)
+![Dashboard recording: Living Room vitals from mmWave and WiFi CSI, then a simulated fall that the bedroom mmWave sensor reports as FALL DETECTED, with the alert in the Family App panel](docs/media/demo.gif)
 
-*Click the image to open the clip ([`docs/media/demo.mp4`](docs/media/demo.mp4),
-about 2 minutes, no sound). It is the same recording that was posted with the
-LinkedIn write-up.*
+*Played at 2x speed, no sound. Full-resolution clip:
+[`docs/media/demo.mp4`](docs/media/demo.mp4) (about 2 minutes). It is the same
+recording that was posted with the LinkedIn write-up.*
 
 What it shows, in order:
 
