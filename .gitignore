@@ -11,6 +11,8 @@ radar_logs/
 recordings/
 demo_recordings/
 *.mp4
+# ...except the curated, silent demo clip linked from the README
+!docs/media/demo.mp4
 
 # Auto-downloaded MediaPipe models
 mediapipe_models/

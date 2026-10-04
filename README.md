@@ -21,6 +21,29 @@ original write-up on LinkedIn:
 [From WiFi DensePose to a working demo — what the AI engine picked up, and what the field oversells](https://www.linkedin.com/pulse/from-wifi-densepose-working-demo-what-ai-engine-picked-juan-wang-yivue/)
 (July 2026).
 
+## Demo video
+
+[![Dashboard during a simulated fall: the bedroom mmWave sensor reports FALL DETECTED and the Family App panel shows the alert](docs/images/demo_thumbnail.jpg)](docs/media/demo.mp4)
+
+*Click the image to open the clip ([`docs/media/demo.mp4`](docs/media/demo.mp4),
+about 2 minutes, no sound). It is the same recording that was posted with the
+LinkedIn write-up.*
+
+What it shows, in order:
+
+1. **Living Room tab** — presence, motion level, breathing and heart rate from
+   the MR60BHA2 and from WiFi CSI side by side, with the fused values on the
+   right, while the person sits, stands and moves around.
+2. **Bedroom tab** — the ceiling-mounted MR60FDA2 reports presence, then
+   **FALL DETECTED** after the person lies down on the floor.
+3. **Family App panel** (bottom left) — the fall alert appears, followed by the
+   acknowledge / emergency entries.
+
+The fall is simulated by the author, on purpose, in one home. The vital-sign
+numbers on screen are raw prototype readings, not validated measurements. The
+pose heatmap comes from a webcam and is only there to make the recording easier
+to follow; it is not part of the detection.
+
 > [!WARNING]
 > **This is an experimental research prototype, not a medical device.**
 > It has not been clinically validated or certified, and it must not be relied
